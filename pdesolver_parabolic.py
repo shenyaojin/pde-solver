@@ -60,10 +60,12 @@ def Solve_2D_Convection_Diffusion_homogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,BB
     U1 = np.zeros((nx,ny))
 
     ## Enforce boundary condition
+    # adding boundary condition to
     U[0,:] = TB
     U[-1,:] = BB
     U[:,0] = LB
     U[:,-1] = RB
+
 
     U1[0,:] = TB
     U1[-1,:] = BB
@@ -194,6 +196,8 @@ def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,
     U1[-1,:] = BB
     U1[:,0] = LB
     U1[:,-1] = RB
+    # Also forcing the boundary condition in the center part of the figure
+    U[0, 50] = F[nx//2, ny//2]
 
     ## . . Define diffusivity and Courant numbers
     AX = K *dt/(dx*dx) ## Diffusivity x: alpha
@@ -227,7 +231,7 @@ def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,
         dx[0   ]+=+(CY+2*AY)*U[0   ,iy]
         dx[nx-3]+=-(CY-2*AY)*U[nx-1,iy]
         # force term
-        dx[:] += 2 * dt * F[1:nx-1,iy]
+        # dx[:] += 2 * dt * F[1:nx-1,iy]
 
         U1[1:nx-1,iy] = TDMAsolver(ax, bx, cx, dx)
 
@@ -239,7 +243,7 @@ def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,
 
         dy[0   ]+=+(CX+2*AX)*U[ix,0   ]
         dy[ny-3]+=-(CX-2*AX)*U[ix,ny-1]
-        dy[:] += 2 * dt * F[ix, 1:ny-1]
+        # dy[:] += 2 * dt * F[ix, 1:ny-1]
 
         U[ix,1:ny-1] = TDMAsolver(ay, by, cy, dy)
 
