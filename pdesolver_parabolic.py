@@ -1,4 +1,5 @@
 import numpy as np
+# the original definition of PDE solver. Based on Jeff's code.
 
 def TDMAsolver(a, b, c, d):
     '''
@@ -159,7 +160,7 @@ def Solve_Convection_Diffusion_homogeneous_Thomas(U,K,vx,dx,dt,LB,RB):
 
     return U
 
-def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,BB,TB,F):
+def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,F, TB, RB, LB, BB):
     '''Set up tridiagonal matrix and call Thomas Algorithm
     usage: x = Solve_2D_Convection_Diffusion_homogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,BB,TB):
     input:
@@ -170,12 +171,9 @@ def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,
         dx: spatial sampling in x-direction
         dy: spatial sampling in y-direction
         dt: temporal sampling
-        LB: Left   boundary condition (Dirchelet)
-        RB: Right  boundary condition (Dirchelet)
-        BB: Bottom boundary condition (Dirchelet)
-        TB: Top    boundary condition (Dirchelet)
     output:
         u: heat solution at time step n+1 (nx,ny)
+        source: the pressure source serve as boundary condition.
     depends on:
         TDMAsolver
 
@@ -191,11 +189,6 @@ def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,
     U[-1,:] = BB
     U[:,0] = LB
     U[:,-1] = RB
-
-    U1[0,:] = TB
-    U1[-1,:] = BB
-    U1[:,0] = LB
-    U1[:,-1] = RB
     # Also forcing the boundary condition in the center part of the figure
     U[0, 50] = F[nx//2, ny//2]
 
@@ -248,7 +241,6 @@ def Solve_2D_Convection_Diffusion_heterogeneous_Thomas(U,K,vx,vy,dx,dy,dt,LB,RB,
         U[ix,1:ny-1] = TDMAsolver(ay, by, cy, dy)
 
     return U
-
 
 # modify the function
 def Solve_2D_Convection_Diffusion_heterogeneous_Thomas_dv(U, K, vx, vy, dx, dy, dt, LB, RB, BB, TB, F):
